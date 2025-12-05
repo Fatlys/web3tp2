@@ -1,122 +1,86 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Futuriste</title>
+    <title>HUD Futuriste - Tests</title>
 
- <!--  CSS Bootstrap -->
+    <!-- CSS Bootstrap -->
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
-
-    <!--  CSS Bootstrap Icons -->
+    <!-- CSS Bootstrap Icons -->
     <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.css">
-
-    <!--  Ton CSS perso -->
+    <!-- CSS perso -->
     <link rel="stylesheet" href="./src/css/styles.css">
-</head>
 
+   
+        <script type="importmap">
+        {
+          "imports": {
+            "animejs": "./node_modules/animejs/dist/bundles/anime.esm.min.js"
+          }
+        }
+        </script>
+        <script src="./src/js/script.js" type="module"></script>
+      
+     
+      
+       
+      
+     
+
+
+</head>
 <body>
 
-    <body>
-        <div class="hud-container">
-            <!-- Section gauche - Bouton verrouiller cible -->
-            <div class="hud-left">
-                <div class="target-lock">
-                    <button id="lockBtn" class="lock-button">
-                        <span class="lock-icon">🎯</span>
-                        <span class="lock-text">Verrouiller Cible</span>
-                    </button>
-                    <div id="lockStatus" class="lock-status">En attente...</div>
-                </div>
-                
-                <!-- Cartes d'information -->
-                <div class="info-cards">
-                    <div class="card">
-                        <h3>Informations Textuelles</h3>
-                        <p id="infoText">Système actif</p>
-                    </div>
-                </div>
-            </div>
-    
-            <!-- Section centrale - Graphiques et Image du personnage -->
-            <div class="hud-center">
-                <div class="character-display">
-                    <div class="character-frame">
-                        <img id="characterImg" src="https://i.pinimg.com/originals/8a/34/21/8a3421566f9de19ec66637eba1888640.png" alt="Goku">
-                        <div class="scan-line"></div>
-                    </div>
-                    <h2 class="character-name">GOKU</h2>
-                </div>
-    
-                <!-- Zone graphique avec Chart.js -->
-                <div class="stats-graph">
-                    <canvas id="powerChart"></canvas>
-                </div>
-            </div>
-    
-            <!-- Section droite - Zdog et Tableau de puissance -->
-            <div class="hud-right">
-                <div class="zdog-container">
-                    <h3>Scanner 3D</h3>
-                    <canvas id="zdogCanvas" width="300" height="300"></canvas>
-                </div>
-    
-                <div class="power-table">
-                    <h3>Tableau de Puissance</h3>
-                    <table id="powerTable">
-                        <thead>
-                            <tr>
-                                <th>Forme</th>
-                                <th>Niveau</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Base</td>
-                                <td>3,000,000</td>
-                            </tr>
-                            <tr>
-                                <td>Super Saiyan</td>
-                                <td>150,000,000</td>
-                            </tr>
-                            <tr>
-                                <td>Super Saiyan 2</td>
-                                <td>300,000,000</td>
-                            </tr>
-                            <tr>
-                                <td>Super Saiyan 3</td>
-                                <td>1,200,000,000</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Scripts -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-        <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
-        <script src="src/js/chartjs.js"></script>
-        <script src="src/js/zdog.js"></script>
-        <script src="src/js/maplibre.js"></script>
-        <script src="src/js/bootstrap.js"></script>
+    <h1>Mon HUD Futuriste</h1>
 
-    <!--  Importmap pour animejs & chart.js -->
+    <div class="alert alert-primary mt-4">
+        Test Bootstrap : Cette alerte fonctionne !
+    </div>
+
+    <button class="btn btn-success">Bouton Bootstrap</button>
+    <i class="bi bi-alarm" style="font-size:40px;"></i>
+
+    <!-- Canvas Chart.js -->
+    <canvas id="chartTest" width="600" height="300"></canvas>
+
+    <!-- Test Grid CSS -->
+    <div class="grid-test" style="display:grid; grid-template-columns: repeat(3, 100px); gap:10px; margin-top:20px;">
+        <div style="background:red; height:50px;"></div>
+        <div style="background:green; height:50px;"></div>
+        <div style="background:blue; height:50px;"></div>
+    </div>
+
+    <!-- Test bouton + fade -->
+    <button id="alertBtn" class="btn btn-warning mt-3">Clique moi</button>
+    <div id="alertBox" class="alert alert-info mt-2" style="display:none;">Tu as cliqué sur le bouton !</div>
+
+    <!-- Test AnimeJS loop -->
+    <div class="anime-loop" style="width:50px; height:50px; background:orange; margin-top:20px;"></div>
+
+    <!-- Test Tone.js -->
+    <button id="toneBtn" class="btn btn-danger mt-3">Jouer un son</button>
+
+    <!-- Importmap pour animejs & chart.js -->
     <script type="importmap">
         {
-            "imports": {            
+            "imports": {
                 "animejs": "./node_modules/animejs/lib/anime.es.js",
                 "chart.js": "./node_modules/chart.js/dist/chart.esm.js",
-                "@kurkle/color": "./node_modules/@kurkle/color/dist/color.esm.js"
+                "@kurkle/color": "./node_modules/@kurkle/color/dist/color.esm.js",
+                "tone": "./node_modules/tone/build/Tone.js"
             }
         }
     </script>
 
-    <!--  Scripts MODULE pour animejs et chartjs -->
+    <!-- Scripts MODULE -->
     <script src="./src/js/animejs.js" type="module"></script>
     <script src="./src/js/chartjs.js" type="module"></script>
+    <script src="./src/js/vfx.js" type="module"></script>
+    <script src="./src/js/tonejs.js" type="module"></script>
 
-    <!--  Bootstrap JS en defer (pas en module) -->
+    <!-- Bootstrap JS -->
     <script src="./src/js/bootstrap.js" defer></script>
 
 </body>
