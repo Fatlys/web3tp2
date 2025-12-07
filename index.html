@@ -1,87 +1,531 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUD Futuriste - Tests</title>
-
-    <!-- CSS Bootstrap -->
-    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <!-- CSS Bootstrap Icons -->
-    <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.css">
-    <!-- CSS perso -->
+    <title>HUD Scouter - Dragon Ball Z</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="./src/css/styles.css">
-
-   
-        <script type="importmap">
-        {
-          "imports": {
-            "animejs": "./node_modules/animejs/dist/bundles/anime.esm.min.js"
-          }
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        </script>
-        <script src="./src/js/script.js" type="module"></script>
-      
-     
-      
-       
-      
-     
-
-
+        
+        body {
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            background: url('./assets/img/namek.jpg') center/cover no-repeat;
+            position: relative;
+        }
+        
+        /* Overlay vert du scouter PLUS VISIBLE */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 0, 0.25);
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: screen;
+        }
+        
+        /* Filtre vert supplémentaire */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, transparent 40%, rgba(0, 255, 0, 0.3) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Container principal */
+        .hud-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 280px 1fr 350px;
+            grid-template-rows: 70px 1fr 180px;
+            gap: 8px;
+            padding: 8px;
+            z-index: 2;
+        }
+        
+        /* Styles communs pour les panneaux - PLUS TRANSPARENTS */
+        .panel {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 12px;
+            color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+            overflow: hidden;
+        }
+        
+        /* En-tête (Header) */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.6em;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 3px;
+        }
+        
+        .header .time {
+            font-size: 1.1em;
+        }
+        
+        /* Panneau gauche - Infos textuelles */
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .info-section {
+            margin-bottom: 15px;
+        }
+        
+        .info-section h3 {
+            color: #ffff00;
+            margin-bottom: 8px;
+            font-size: 1em;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 3px;
+        }
+        
+        .info-section p {
+            margin: 4px 0;
+            font-size: 0.85em;
+        }
+        
+        .info-label {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        /* Centre - Image du personnage - FOND PLUS TRANSPARENT */
+        .center-panel {
+            grid-column: 2;
+            grid-row: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            border: 3px solid #00ff00;
+            position: relative;
+        }
+        
+        .center-panel img {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5));
+        }
+        
+        /* Crosshair au centre */
+        .crosshair {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #ff0000;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background: #ff0000;
+        }
+        
+        .crosshair::before {
+            width: 3px;
+            height: 25px;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .crosshair::after {
+            width: 25px;
+            height: 3px;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        /* Panneau droit - Graphiques PLUS GRANDS */
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        
+        .chart-container {
+            margin-bottom: 20px;
+        }
+        
+        .chart-container h4 {
+            color: #ffff00;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+        
+        .chart-container canvas {
+            width: 100% !important;
+        }
+        
+        #zdog-canvas {
+            height: 200px !important;
+        }
+        
+        #power-chart {
+            height: 180px !important;
+        }
+        
+        /* Pied de page - Tableau de puissance */
+        .footer {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .power-item {
+            text-align: center;
+        }
+        
+        .power-item h3 {
+            color: #ffff00;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .power-value {
+            font-size: 2.5em;
+            color: #ff0000;
+            text-shadow: 0 0 15px #ff0000;
+            font-weight: bold;
+        }
+        
+        .power-bar {
+            width: 220px;
+            height: 25px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+        
+        .power-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            transition: width 0.5s;
+        }
+        
+        /* Bouton de verrouillage cible */
+        .lock-button {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: #ff0000;
+            color: #000;
+            border: 2px solid #fff;
+            padding: 12px 25px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 3;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+            font-size: 1.1em;
+        }
+        
+        .lock-button:hover {
+            background: #ff3333;
+            transform: scale(1.08);
+        }
+        
+        /* Effet de scan */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 0, 0.6);
+            animation: scan 3s linear infinite;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Mon HUD Futuriste</h1>
+    <div class="scan-line"></div>
 
-    <div class="alert alert-primary mt-4">
-        Test Bootstrap : Cette alerte fonctionne !
+    <div class="hud-container">
+        
+        <!-- HEADER -->
+        <div class="panel header">
+            <h1>🎯 SCOUTER DBZ</h1>
+            <div class="time" id="current-time">00:00:00</div>
+        </div>
+        
+        <!-- PANNEAU GAUCHE - Informations Textuelles -->
+        <div class="panel left-panel">
+            <div class="info-section">
+                <h3>情報テキスト</h3>
+                <p><span class="info-label">名前:</span> Son Goku</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>ボタン</h3>
+                <button class="btn btn-success btn-sm w-100 mb-2" id="btn-lock">
+                    <i class="bi bi-lock"></i> ターゲットロック
+                </button>
+            </div>
+            
+            <div class="info-section">
+                <h3>カード</h3>
+                <div class="card bg-dark text-success border-success">
+                    <div class="card-body p-2">
+                        <p class="mb-0" style="font-size: 0.85em;">種族: サイヤ人</p>
+                        <p class="mb-0" style="font-size: 0.85em;">状態: 戦闘準備完了</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CENTRE - Image du personnage -->
+        <div class="center-panel">
+            <img src="./assets/img/goku.png" alt="Son Goku" id="character-img">
+            <div class="crosshair"></div>
+        </div>
+        
+        <!-- PANNEAU DROIT - Graphiques -->
+        <div class="panel right-panel">
+            <div class="chart-container">
+                <h4>Dragon Ball</h4>
+                <canvas id="zdog-canvas" width="300" height="200"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h4>戦闘力グラフ</h4>
+                <canvas id="power-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- FOOTER - Tableau de puissance -->
+        <div class="panel footer">
+            <div class="power-item">
+                <h3>基本戦闘力</h3>
+                <div class="power-value" id="base-power">9001</div>
+                <div class="power-bar">
+                    <div class="power-bar-fill" style="width: 85%"></div>
+                </div>
+            </div>
+            
+            <div class="power-item">
+                <h3>現在の戦闘力</h3>
+                <div class="power-value" id="current-power">12000</div>
+                <div class="power-bar">
+                    <div class="power-bar-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            
+            <div class="power-item">
+                <h3>最大戦闘力</h3>
+                <div class="power-value" id="max-power">150000</div>
+                <div class="power-bar">
+                    <div class="power-bar-fill" style="width: 60%"></div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
-    <button class="btn btn-success">Bouton Bootstrap</button>
-    <i class="bi bi-alarm" style="font-size:40px;"></i>
+    <button class="lock-button" id="lock-target">
+        <i class="bi bi-crosshair"></i> LOCK TARGET
+    </button>
 
-    <!-- Canvas Chart.js -->
-    <canvas id="chartTest" width="600" height="300"></canvas>
+    <!-- AUDIO -->
+    <audio id="lock-sound" src="./assets/audio/sound.mp3" preload="auto"></audio>
 
-    <!-- Test Grid CSS -->
-    <div class="grid-test" style="display:grid; grid-template-columns: repeat(3, 100px); gap:10px; margin-top:20px;">
-        <div style="background:red; height:50px;"></div>
-        <div style="background:green; height:50px;"></div>
-        <div style="background:blue; height:50px;"></div>
-    </div>
-
-    <!-- Test bouton + fade -->
-    <button id="alertBtn" class="btn btn-warning mt-3">Clique moi</button>
-    <div id="alertBox" class="alert alert-info mt-2" style="display:none;">Tu as cliqué sur le bouton !</div>
-
-    <!-- Test AnimeJS loop -->
-    <div class="anime-loop" style="width:50px; height:50px; background:orange; margin-top:20px;"></div>
-
-    <!-- Test Tone.js -->
-    <button id="toneBtn" class="btn btn-danger mt-3">Jouer un son</button>
-
-    <!-- Importmap pour animejs & chart.js -->
+    <!-- IMPORTMAP -->
     <script type="importmap">
-        {
-            "imports": {
-                "animejs": "./node_modules/animejs/lib/anime.es.js",
-                "chart.js": "./node_modules/chart.js/dist/chart.esm.js",
-                "@kurkle/color": "./node_modules/@kurkle/color/dist/color.esm.js",
-                "tone": "./node_modules/tone/build/Tone.js"
-            }
+    {
+        "imports": {
+            "animejs": "https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.es.js",
+            "chart.js": "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/+esm",
+            "tone": "https://cdn.jsdelivr.net/npm/tone@14.7.77/+esm",
+            "zdog": "https://cdn.jsdelivr.net/npm/zdog@1.1.3/+esm"
         }
+    }
     </script>
 
-    <!-- Scripts MODULE -->
-    <script src="./src/js/animejs.js" type="module"></script>
-    <script src="./src/js/chartjs.js" type="module"></script>
-    <script src="./src/js/vfx.js" type="module"></script>
-    <script src="./src/js/tonejs.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bootstrap JS -->
-    <script src="./src/js/bootstrap.js" defer></script>
+    <script type="module">
+        // Horloge en temps réel
+        function updateTime() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('fr-FR');
+            document.getElementById('current-time').textContent = time;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ZDOG - DRAGON BALL (Boule orange avec étoile)
+        import Zdog from 'zdog';
+        
+        const illo = new Zdog.Illustration({
+            element: '#zdog-canvas',
+            dragRotate: true,
+            zoom: 5,
+            rotate: { x: -0.3, y: 0.5 }
+        });
+
+        // Sphère orange (Dragon Ball)
+        new Zdog.Ellipse({
+            addTo: illo,
+            diameter: 40,
+            stroke: 20,
+            color: '#ff8800',
+        });
+
+        // Étoile au centre
+        const star = new Zdog.Shape({
+            addTo: illo,
+            path: [
+                { x: 0, y: -8 },
+                { x: 2, y: -3 },
+                { x: 8, y: -3 },
+                { x: 3, y: 1 },
+                { x: 5, y: 8 },
+                { x: 0, y: 4 },
+                { x: -5, y: 8 },
+                { x: -3, y: 1 },
+                { x: -8, y: -3 },
+                { x: -2, y: -3 }
+            ],
+            closed: true,
+            stroke: 0,
+            color: '#ff0000',
+            fill: true
+        });
+
+        function animateZdog() {
+            illo.rotate.y += 0.02;
+            illo.updateRenderGraph();
+            requestAnimationFrame(animateZdog);
+        }
+        animateZdog();
+
+        // CHART.JS
+        import { Chart, registerables } from 'chart.js';
+        Chart.register(...registerables);
+
+        const ctx = document.getElementById('power-chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['0s', '2s', '4s', '6s', '8s', '10s'],
+                datasets: [{
+                    label: '戦闘力',
+                    data: [9000, 12000, 15000, 18000, 22000, 25000],
+                    borderColor: '#00ff00',
+                    backgroundColor: 'rgba(0, 255, 0, 0.3)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { 
+                        ticks: { color: '#00ff00', font: { size: 10 } },
+                        grid: { color: 'rgba(0, 255, 0, 0.2)' }
+                    },
+                    y: { 
+                        ticks: { color: '#00ff00', font: { size: 10 } },
+                        grid: { color: 'rgba(0, 255, 0, 0.2)' }
+                    }
+                }
+            }
+        });
+
+        // ANIME.JS - Animation du bouton lock
+        import anime from 'animejs';
+        
+        const lockSound = document.getElementById('lock-sound');
+        
+        document.getElementById('lock-target').addEventListener('click', function() {
+            // JOUER LE SON
+            lockSound.currentTime = 0;
+            lockSound.play();
+            
+            anime({
+                targets: '.crosshair',
+                scale: [1, 1.5, 1],
+                rotate: '1turn',
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+            
+            anime({
+                targets: '#character-img',
+                scale: [1, 1.1, 1],
+                duration: 300
+            });
+        });
+
+       // TONE.JS - Son au lock du bouton japonais
+        import * as Tone from 'tone';
+        
+        document.getElementById('btn-lock').addEventListener('click', async function() {
+            await Tone.start();
+            const synth = new Tone.Synth().toDestination();
+            synth.triggerAttackRelease("C5", "8n");
+            
+            anime({
+                targets: '.center-panel',
+                borderColor: ['#00ff00', '#ff0000', '#00ff00'],
+                duration: 500
+            });
+        });
+
+    </script>
 
 </body>
 </html>
