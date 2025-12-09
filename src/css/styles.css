@@ -1,0 +1,486 @@
+/* ============================================
+   STYLES GÉNÉRAUX
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    background: url('../../assets/img/namek.jpg') center/cover no-repeat fixed;
+    position: relative;
+}
+
+/* Overlay vert scouter */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 255, 0, 0.15);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Ligne de scan */
+.scan-line {
+    position: fixed;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(180deg, transparent, rgba(0, 255, 0, 0.8), transparent);
+    animation: scan 3s linear infinite;
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+}
+
+@keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+/* ============================================
+   GRILLE PRINCIPALE
+   ============================================ */
+.hud-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+}
+
+.hud-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr 380px;
+    grid-template-rows: 65px 1fr 160px;
+    gap: 6px;
+    padding: 6px;
+    height: 100vh;
+}
+
+/* ============================================
+   PANNEAUX
+   ============================================ */
+.hud-panel {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 12px;
+    color: #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+    overflow: hidden;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.hud-header {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hud-logo {
+    width: 45px;
+    height: 45px;
+    background: radial-gradient(circle, #00ff00, #008800);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.2em;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+}
+
+.hud-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4em;
+    text-shadow: 0 0 10px #00ff00;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.hud-small {
+    font-size: 0.75em;
+    margin: 2px 0;
+}
+
+.mono-digits {
+    font-family: 'Share Tech Mono', monospace;
+    color: #6eea8c;
+}
+
+/* ============================================
+   PANNEAU GAUCHE
+   ============================================ */
+.hud-left {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hud-section-title {
+    font-size: 1em;
+    color: #ffff00;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 4px;
+}
+
+/* Boutons de personnage */
+.character-btn {
+    width: 100%;
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    padding: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Share Tech Mono', monospace;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.character-btn.active {
+    background: rgba(0, 255, 0, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.character-btn:hover {
+    background: rgba(0, 255, 0, 0.2);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00ff00;
+    box-shadow: 0 0 8px #00ff00;
+}
+
+/* Graphique */
+.hud-chart-wrapper {
+    height: 120px;
+    margin-bottom: 10px;
+}
+
+/* Dossier */
+.hud-dossier {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    font-size: 0.75em;
+    line-height: 1.4;
+    border: 1px solid #00ff00;
+    margin-bottom: 10px;
+}
+
+/* GPS */
+.hud-gps {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px;
+    border: 1px solid #00ff00;
+    font-size: 0.8em;
+}
+
+.gps-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0;
+}
+
+.gps-label {
+    color: #6eea8c;
+}
+
+.gps-value {
+    color: #00ff00;
+}
+
+/* ============================================
+   PANNEAU CENTRAL - PERSONNAGES
+   ============================================ */
+.hud-center {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.character-display {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    background: transparent;
+    border: 3px solid #00ff00;
+    border-radius: 8px;
+    padding-bottom: 20px;
+}
+
+.character-display img {
+    max-height: 100%;
+    max-width: 90%;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.4));
+    transition: all 0.5s ease;
+}
+
+/* ============================================
+   CONTRÔLE INDIVIDUEL DES PERSONNAGES
+   Modifie ces valeurs pour ajuster chaque personnage
+   ============================================ */
+
+/* GOKU */
+#character-img[src*="goku"] {
+    max-height: 100%;
+    max-width: 90%;
+    object-position: center bottom;
+    transform: translateY(0px);
+}
+
+/* VEGETA */
+#character-img[src*="Vegeta"] {
+    max-height: 95%;
+    max-width: 85%;
+    object-position: center bottom;
+    transform: translateY(-10px);
+}
+
+/* GOHAN */
+#character-img[src*="Gohan"] {
+    max-height: 100%;
+    max-width: 88%;
+    object-position: center bottom;
+    transform: translateY(0px);
+}
+
+/* PICCOLO */
+#character-img[src*="Piccolo"] {
+    max-height: 100%;
+    max-width: 85%;
+    object-position: center bottom;
+    transform: translateY(-5px);
+}
+
+/* FRIEZA */
+#character-img[src*="Frieza"] {
+    max-height: 90%;
+    max-width: 80%;
+    object-position: center bottom;
+    transform: translateY(-15px);
+}
+
+/* Crosshair sur la tête */
+.crosshair {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 4px solid #ff0000;
+    border-radius: 50%;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: #ff0000;
+    box-shadow: 0 0 10px #ff0000;
+}
+
+.crosshair::before {
+    width: 4px;
+    height: 30px;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.crosshair::after {
+    width: 30px;
+    height: 4px;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Cartes de personnages */
+.character-cards {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.character-card {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #00ff00;
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.character-card.active {
+    border-color: #ff0000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+.character-card:hover {
+    transform: scale(1.05);
+}
+
+.character-card img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+    margin-bottom: 4px;
+    border: 1px solid #00ff00;
+}
+
+.character-name {
+    font-size: 0.7em;
+    color: #00ff00;
+}
+
+.power-level {
+    font-size: 0.8em;
+    color: #ff0000;
+    font-weight: bold;
+}
+
+/* ============================================
+   PANNEAU DROIT
+   ============================================ */
+.hud-right {
+    grid-column: 3;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Carte */
+.hud-map {
+    height: 200px;
+    background: #0a0a0a;
+    border: 2px solid #00ff00;
+    border-radius: 5px;
+    position: relative;
+}
+
+.map-coordinates {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 4px 8px;
+    font-size: 0.7em;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    z-index: 1;
+}
+
+/* Dragon Ball */
+.hud-dragonball-wrapper {
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hud-dragonball-wrapper canvas {
+    width: 100%;
+    height: 150px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.hud-footer {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.power-display {
+    display: flex;
+    gap: 20px;
+}
+
+.power-item {
+    text-align: center;
+}
+
+.power-item h4 {
+    font-size: 0.85em;
+    color: #ffff00;
+    margin-bottom: 5px;
+}
+
+.power-value {
+    font-size: 2em;
+    color: #ff0000;
+    text-shadow: 0 0 15px #ff0000;
+    font-weight: bold;
+}
+
+.power-bar {
+    width: 180px;
+    height: 20px;
+    background: rgba(0, 255, 0, 0.2);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 8px auto;
+}
+
+.power-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+    transition: width 0.5s;
+}
+
+/* Bouton Lock */
+.lock-button {
+    background: #ff0000;
+    color: #000;
+    border: 3px solid #fff;
+    padding: 12px 30px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+    font-size: 1.1em;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.2s;
+}
+
+.lock-button:hover {
+    background: #ff3333;
+    transform: scale(1.08);
+}
+
