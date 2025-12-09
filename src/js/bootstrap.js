@@ -1,51 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
   const transformModal = new bootstrap.Modal(document.getElementById('transformModal'));
   
-  // Données de transformation par personnage
-  const transformations = {
-    "goku": { name: "SUPER SAIYAN", emoji: "⚡🔥💥" },
-    "vegeta": { name: "SUPER SAIYAN PRINCE", emoji: "👑⚡💫" },
-    "gohan": { name: "SUPER SAIYAN 2", emoji: "⚡⚡🌟" },
-    "piccolo": { name: "FUSION NAMEK", emoji: "🟢💚✨" },
-    "frieza": { name: "GOLDEN FRIEZA", emoji: "👹✨💛" }
+  const detectionMessages = {
+    "goku": { name: "GOKU DETECTED", emoji: "⚡🔥💥", color: "#ff8c00" },
+    "vegeta": { name: "VEGETA DETECTED", emoji: "👑⚡💫", color: "#0066ff" },
+    "gohan": { name: "GOHAN DETECTED", emoji: "⚡⚡🌟", color: "#ffcc00" },
+    "piccolo": { name: "PICCOLO DETECTED", emoji: "🟢💚✨", color: "#00ff00" },
+    "frieza": { name: "FRIEZA DETECTED", emoji: "👹✨💛", color: "#9900ff" }
   };
 
-  let lastClickTime = 0;
-  const doubleClickDelay = 500;
-
-  // Détecter double-clic sur les cartes de personnage
-  document.querySelectorAll(".character-card").forEach(card => {
-    card.addEventListener("click", (e) => {
-      const currentTime = new Date().getTime();
-      const timeDiff = currentTime - lastClickTime;
-      
-      if (timeDiff < doubleClickDelay && timeDiff > 0) {
-        // Double-clic détecté !
-        const charId = card.dataset.char;
-        showTransformation(charId);
-      }
-      
-      lastClickTime = currentTime;
-    });
-  });
-
-  function showTransformation(charId) {
-    const transform = transformations[charId];
-    if (!transform) return;
+  function showDetection() {
+    // Trouver le personnage actuellement actif
+    const activeBtn = document.querySelector(".character-btn.active");
+    if (!activeBtn) return;
+    
+    const charId = activeBtn.dataset.char;
+    const detection = detectionMessages[charId];
+    if (!detection) return;
 
     // Mettre à jour le contenu du modal
-    document.getElementById("transform-name").textContent = transform.name;
-    document.querySelector("#transformModal .modal-body div").textContent = transform.emoji;
+    const transformName = document.getElementById("transform-name");
+    transformName.textContent = detection.name;
+    transformName.style.color = detection.color;
+    
+    document.querySelector("#transformModal .modal-body div").textContent = detection.emoji;
 
-    // Jouer le son de transformation
+    // Changer le texte du modal
+    const modalBody = document.querySelector("#transformModal .modal-body p");
+    if (modalBody) {
+      modalBody.textContent = "CIBLE VERROUILLÉE!";
+    }
+
     if (window.playDBZSound) {
       window.playDBZSound("transformation");
     }
 
-    // Afficher le modal
     transformModal.show();
 
-    // Animer la barre de progression
     const progressBar = document.getElementById("power-progress");
     progressBar.style.width = "0%";
     
@@ -59,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, 30);
 
-    // Animation du personnage lors de la transformation
     if (window.anime) {
       anime({
         targets: "#character-img",
@@ -81,8 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Afficher automatiquement au chargement après 5 secondes
-  setTimeout(() => {
-    showTransformation("goku");
-  }, 5000);
+  // Exposer la fonction globalement
+  window.showDetection = showDetection;
 });

@@ -232,14 +232,9 @@ body::before {
 }
 
 .character-display img {
-    max-height: 100%;
-    max-width: 90%;
-    object-fit: contain;
-    object-position: center bottom;
     filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.4));
     transition: all 0.5s ease;
 }
-
 
 /* GOKU */
 #character-img[src*="goku"] {
@@ -281,7 +276,6 @@ body::before {
     bottom: -20px;
 }
 
-
 /* Crosshair sur la tête */
 .crosshair {
     position: absolute;
@@ -296,14 +290,6 @@ body::before {
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
 }
 
-
-
-.power-level {
-    font-size: 0.8em;
-    color: #ff0000;
-    font-weight: bold;
-}
-
 /* ============================================
    PANNEAU DROIT
    ============================================ */
@@ -314,7 +300,6 @@ body::before {
     flex-direction: column;
     gap: 10px;
 }
-
 
 /* Dragon Ball */
 .hud-dragonball-wrapper {

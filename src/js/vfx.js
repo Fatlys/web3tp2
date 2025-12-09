@@ -23,48 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateClock, 1000);
 
   // ============================================
-  // LOGS AUTOMATIQUES
-  // ============================================
-  function addLog() {
-    const logs = document.getElementById("logs");
-    if (!logs) return;
-    
-    const messages = [
-      "SCAN: KI_AUGMENTE",
-      "ALERTE: MOUVEMENT_DÉTECTÉ",
-      "DATA: TRANSMISSION_OK",
-      "STATUT: SURVEILLANCE_ACTIVE",
-      "SIGNAL: DRAGON_RADAR_ON",
-      "CRYPTO: DÉCODAGE_RÉUSSI",
-      "COMBAT: NIVEAU_ÉLEVÉ",
-      "ÉNERGIE: FLUCTUATION",
-      "SCOUTER: CALIBRATION_OK"
-    ];
-    
-    const now = new Date();
-    const time = now.toLocaleTimeString("fr-CA", { hour12: false });
-    const msg = messages[Math.floor(Math.random() * messages.length)];
-    
-    const newLine = document.createElement("div");
-    newLine.className = "log-line new";
-    newLine.innerHTML = `<span class="log-time">${time}</span> ${msg}`;
-    
-    logs.querySelectorAll(".log-line.new").forEach(line => {
-      line.classList.remove("new");
-    });
-    
-    logs.appendChild(newLine);
-    
-    while (logs.children.length > 6) {
-      logs.removeChild(logs.firstChild);
-    }
-    
-    logs.scrollTop = logs.scrollHeight;
-  }
-  
-  setInterval(addLog, 4000);
-
-  // ============================================
   // SYSTÈME DE CHANGEMENT DE PERSONNAGE
   // ============================================
   const characterData = {
@@ -109,18 +67,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = characterData[charId];
     if (!data) return;
 
-    // Changer l'image
     const img = document.getElementById("character-img");
     if (img) {
       img.src = data.img;
       img.alt = data.name;
     }
 
-    // Mettre à jour le profil
     const dossier = document.getElementById("dossier-text");
     if (dossier) {
       dossier.innerHTML = data.profile;
-      // Animation de fondu
       dossier.style.opacity = "0";
       setTimeout(() => {
         dossier.style.opacity = "1";
@@ -128,19 +83,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 100);
     }
 
-    // Mettre à jour GPS
     const gpsLat = document.getElementById("gps-lat");
     const gpsLng = document.getElementById("gps-lng");
     if (gpsLat) gpsLat.textContent = data.location.lat;
     if (gpsLng) gpsLng.textContent = data.location.lng;
 
-    // Mettre à jour le texte de localisation
     const locationText = document.querySelector(".hud-gps div:last-child");
     if (locationText) {
       locationText.innerHTML = `<span style="color: #ffff00;">📍</span> ${data.location.planet}`;
     }
 
-    // Mettre à jour les valeurs de puissance
     const basePower = document.getElementById("base-power");
     const currentPower = document.getElementById("current-power");
     const maxPower = document.getElementById("max-power");
@@ -149,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentPower) currentPower.textContent = data.powers.current;
     if (maxPower) maxPower.textContent = data.powers.max;
 
-    // Animer les barres de puissance
     const bars = document.querySelectorAll(".power-bar-fill");
     if (bars.length >= 3) {
       bars[0].style.width = "0%";
@@ -163,16 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 100);
     }
 
-    // Mettre à jour les classes actives
     document.querySelectorAll(".character-btn").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.char === charId);
     });
 
-    document.querySelectorAll(".character-card").forEach(card => {
-      card.classList.toggle("active", card.dataset.char === charId);
-    });
-
-    // Mettre à jour la carte
     if (window.hudMap && window.hudCharLocations) {
       const loc = window.hudCharLocations[charId];
       if (loc) {
@@ -185,12 +130,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Mettre à jour le marqueur actif
     if (window.setActiveMarker) {
       window.setActiveMarker(charId);
     }
 
-    // Mettre à jour les coordonnées de la carte
     if (window.updateMapCoordinates) {
       const loc = window.hudCharLocations[charId];
       if (loc) {
@@ -198,7 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Animation du personnage lors du changement
     if (window.anime) {
       anime({
         targets: "#character-img",
@@ -221,14 +163,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ============================================
   // ATTACHER LES ÉVÉNEMENTS
   // ============================================
-  document.querySelectorAll(".character-btn, .character-card").forEach(btn => {
+  document.querySelectorAll(".character-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       switchCharacter(btn.dataset.char);
     });
   });
 
-  // ============================================
-  // EXPOSER GLOBALEMENT
-  // ============================================
   window.switchCharacter = switchCharacter;
 });

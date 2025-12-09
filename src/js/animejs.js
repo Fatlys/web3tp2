@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   if (!window.anime) return;
 
-  // Animations d'entrée
   anime({
     targets: ".hud-header",
     opacity: [0, 1],
@@ -46,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
     easing: "easeOutExpo"
   });
 
-  // Pulsation du logo
   anime({
     targets: ".hud-logo",
     boxShadow: [
@@ -59,8 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
     easing: "easeInOutSine"
   });
 
-  // Animation des boutons
-  document.querySelectorAll(".character-btn, .character-card").forEach(btn => {
+  document.querySelectorAll(".character-btn").forEach(btn => {
     btn.addEventListener("mouseenter", () => {
       anime({
         targets: btn,
@@ -80,12 +77,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Animation Lock Button
   document.getElementById("lock-target").addEventListener("click", function() {
     const lockSound = document.getElementById("lock-sound");
     if (lockSound) {
       lockSound.currentTime = 0;
       lockSound.play();
+      
+      // Déclencher le popup à la fin du son
+      lockSound.addEventListener("ended", function() {
+        if (window.showDetection) {
+          window.showDetection();
+        }
+      }, { once: true });
     }
 
     anime({
