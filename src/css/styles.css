@@ -1,6 +1,3 @@
-/* ============================================
-   STYLES GÉNÉRAUX
-   ============================================ */
 * {
     margin: 0;
     padding: 0;
@@ -243,50 +240,47 @@ body::before {
     transition: all 0.5s ease;
 }
 
-/* ============================================
-   CONTRÔLE INDIVIDUEL DES PERSONNAGES
-   Modifie ces valeurs pour ajuster chaque personnage
-   ============================================ */
 
 /* GOKU */
 #character-img[src*="goku"] {
-    max-height: 100%;
-    max-width: 90%;
-    object-position: center bottom;
-    transform: translateY(0px);
+    width: 300px;
+    height: auto;
+    margin-left: -25px;
+    bottom: 20px;
 }
 
 /* VEGETA */
 #character-img[src*="Vegeta"] {
-    max-height: 95%;
-    max-width: 85%;
-    object-position: center bottom;
-    transform: translateY(-10px);
+    width: 300px;
+    height: auto;
+    margin-left: 5px;
+    bottom: -100px;
 }
 
 /* GOHAN */
 #character-img[src*="Gohan"] {
-    max-height: 100%;
-    max-width: 88%;
-    object-position: center bottom;
-    transform: translateY(0px);
+    width: 320px;
+    height: auto;
+    margin-left: 10px;
+    bottom: 15px;
 }
 
 /* PICCOLO */
 #character-img[src*="Piccolo"] {
-    max-height: 100%;
-    max-width: 85%;
-    object-position: center bottom;
-    transform: translateY(-5px);
+    width: 470px;
+    height: auto;
+    margin-left: 5px;
+    bottom: 5px;
 }
 
 /* FRIEZA */
 #character-img[src*="Frieza"] {
-    max-height: 90%;
-    max-width: 80%;
-    object-position: center bottom;
-    transform: translateY(-15px);
+    width: 550px;
+    height: auto;
+    margin-left: -5px;
+    bottom: -20px;
 }
+
 
 /* Crosshair sur la tête */
 .crosshair {
@@ -295,75 +289,14 @@ body::before {
     height: 100px;
     border: 4px solid #ff0000;
     border-radius: 50%;
-    top: 12%;
-    left: 50%;
+    top: 22%;
+    left: 45%;
     transform: translateX(-50%);
     pointer-events: none;
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
 }
 
-.crosshair::before,
-.crosshair::after {
-    content: '';
-    position: absolute;
-    background: #ff0000;
-    box-shadow: 0 0 10px #ff0000;
-}
 
-.crosshair::before {
-    width: 4px;
-    height: 30px;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.crosshair::after {
-    width: 30px;
-    height: 4px;
-    left: -15px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-/* Cartes de personnages */
-.character-cards {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.character-card {
-    flex: 1;
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid #00ff00;
-    padding: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.character-card.active {
-    border-color: #ff0000;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-}
-
-.character-card:hover {
-    transform: scale(1.05);
-}
-
-.character-card img {
-    width: 100%;
-    height: 60px;
-    object-fit: cover;
-    margin-bottom: 4px;
-    border: 1px solid #00ff00;
-}
-
-.character-name {
-    font-size: 0.7em;
-    color: #00ff00;
-}
 
 .power-level {
     font-size: 0.8em;
@@ -382,38 +315,21 @@ body::before {
     gap: 10px;
 }
 
-/* Carte */
-.hud-map {
-    height: 200px;
-    background: #0a0a0a;
-    border: 2px solid #00ff00;
-    border-radius: 5px;
-    position: relative;
-}
-
-.map-coordinates {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 4px 8px;
-    font-size: 0.7em;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    z-index: 1;
-}
 
 /* Dragon Ball */
 .hud-dragonball-wrapper {
-    height: 180px;
+    height: 220px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 10px 0;
 }
 
 .hud-dragonball-wrapper canvas {
     width: 100%;
-    height: 150px;
+    height: 200px;
+    display: block;
 }
 
 /* ============================================
@@ -483,4 +399,3 @@ body::before {
     background: #ff3333;
     transform: scale(1.08);
 }
-
