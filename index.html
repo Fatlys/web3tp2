@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HUD Scouter - Dragon Ball Z</title>
     
+    <!-- Polices Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- MapLibre CSS -->
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
+    
+    <!-- CSS Personnalisé -->
     <link rel="stylesheet" href="./src/css/styles.css">
     
     <style>
@@ -17,57 +26,64 @@
         }
         
         body {
-            font-family: 'Courier New', monospace;
+            font-family: 'Share Tech Mono', monospace;
             overflow: hidden;
             height: 100vh;
             width: 100vw;
-            background: url('./assets/img/namek.jpg') center/cover no-repeat;
+            background: url('./assets/img/namek.jpg') center/cover no-repeat fixed;
             position: relative;
         }
         
-        /* Overlay vert du scouter PLUS VISIBLE */
+        /* Overlay vert scouter */
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 255, 0, 0.25);
+            background: rgba(0, 255, 0, 0.15);
             pointer-events: none;
             z-index: 1;
-            mix-blend-mode: screen;
         }
         
-        /* Filtre vert supplémentaire */
-        body::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Ligne de scan */
+        .scan-line {
+            position: fixed;
             width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 30%, transparent 40%, rgba(0, 255, 0, 0.3) 100%);
+            height: 4px;
+            background: linear-gradient(180deg, transparent, rgba(0, 255, 0, 0.8), transparent);
+            animation: scan 3s linear infinite;
+            z-index: 10;
             pointer-events: none;
-            z-index: 1;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
         }
         
-        /* Container principal */
-        .hud-container {
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        /* Grille principale */
+        .hud-wrapper {
             position: relative;
             width: 100vw;
             height: 100vh;
-            display: grid;
-            grid-template-columns: 280px 1fr 350px;
-            grid-template-rows: 70px 1fr 180px;
-            gap: 8px;
-            padding: 8px;
             z-index: 2;
         }
         
-        /* Styles communs pour les panneaux - PLUS TRANSPARENTS */
-        .panel {
-            background: rgba(0, 0, 0, 0.5);
+        .hud-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 380px;
+            grid-template-rows: 65px 1fr 160px;
+            gap: 6px;
+            padding: 6px;
+            height: 100vh;
+        }
+        
+        /* Panneaux */
+        .hud-panel {
+            background: rgba(0, 0, 0, 0.6);
             border: 2px solid #00ff00;
             border-radius: 8px;
             padding: 12px;
@@ -76,82 +92,175 @@
             overflow: hidden;
         }
         
-        /* En-tête (Header) */
-        .header {
+        /* Header */
+        .hud-header {
             grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        .header h1 {
-            font-size: 1.6em;
+        .hud-logo {
+            width: 45px;
+            height: 45px;
+            background: radial-gradient(circle, #00ff00, #008800);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.2em;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+        }
+        
+        .hud-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4em;
             text-shadow: 0 0 10px #00ff00;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
+            margin: 0;
         }
         
-        .header .time {
-            font-size: 1.1em;
+        .hud-small {
+            font-size: 0.75em;
+            margin: 2px 0;
         }
         
-        /* Panneau gauche - Infos textuelles */
-        .left-panel {
+        .mono-digits {
+            font-family: 'Share Tech Mono', monospace;
+            color: #6eea8c;
+        }
+        
+        /* Panneau gauche */
+        .hud-left {
             grid-column: 1;
             grid-row: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         
-        .info-section {
-            margin-bottom: 15px;
-        }
-        
-        .info-section h3 {
+        .hud-section-title {
+            font-size: 1em;
             color: #ffff00;
             margin-bottom: 8px;
-            font-size: 1em;
             border-bottom: 1px solid #00ff00;
-            padding-bottom: 3px;
+            padding-bottom: 4px;
         }
         
-        .info-section p {
-            margin: 4px 0;
-            font-size: 0.85em;
-        }
-        
-        .info-label {
+        /* Boutons de personnage */
+        .character-btn {
+            width: 100%;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
             color: #00ff00;
-            font-weight: bold;
+            padding: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Share Tech Mono', monospace;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        /* Centre - Image du personnage - FOND PLUS TRANSPARENT */
-        .center-panel {
+        .character-btn.active {
+            background: rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+        
+        .character-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff00;
+            box-shadow: 0 0 8px #00ff00;
+        }
+        
+        /* Graphique */
+        .hud-chart-wrapper {
+            height: 120px;
+            margin-bottom: 10px;
+        }
+        
+        /* Dossier */
+        .hud-dossier {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            font-size: 0.75em;
+            line-height: 1.4;
+            border: 1px solid #00ff00;
+            margin-bottom: 10px;
+        }
+        
+        /* GPS */
+        .hud-gps {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border: 1px solid #00ff00;
+            font-size: 0.8em;
+        }
+        
+        .gps-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+        }
+        
+        .gps-label {
+            color: #6eea8c;
+        }
+        
+        .gps-value {
+            color: #00ff00;
+        }
+        
+        /* Centre - Personnage */
+        .hud-center {
             grid-column: 2;
             grid-row: 2;
             display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        
+        .character-display {
+            flex: 1;
+            display: flex;
             justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.2);
-            border: 3px solid #00ff00;
+            align-items: flex-end;
             position: relative;
+            background: transparent;
+            border: 3px solid #00ff00;
+            border-radius: 8px;
+            padding-bottom: 20px;
         }
         
-        .center-panel img {
+        .character-display img {
+            max-height: 90%;
             max-width: 85%;
-            max-height: 85%;
             object-fit: contain;
-            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5));
+            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.4));
         }
         
-        /* Crosshair au centre */
+        /* Crosshair sur la tête */
         .crosshair {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 3px solid #ff0000;
+            width: 100px;
+            height: 100px;
+            border: 4px solid #ff0000;
             border-radius: 50%;
-            top: 50%;
+            top: 12%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             pointer-events: none;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
         }
         
         .crosshair::before,
@@ -159,85 +268,175 @@
             content: '';
             position: absolute;
             background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
         }
         
         .crosshair::before {
-            width: 3px;
-            height: 25px;
-            top: -12px;
+            width: 4px;
+            height: 30px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%);
         }
         
         .crosshair::after {
-            width: 25px;
-            height: 3px;
-            left: -12px;
+            width: 30px;
+            height: 4px;
+            left: -15px;
             top: 50%;
             transform: translateY(-50%);
         }
         
-        /* Panneau droit - Graphiques PLUS GRANDS */
-        .right-panel {
+        /* Cartes de personnages */
+        .character-cards {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .character-card {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .character-card.active {
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+        
+        .character-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-card img {
+            width: 100%;
+            height: 60px;
+            object-fit: cover;
+            margin-bottom: 4px;
+            border: 1px solid #00ff00;
+        }
+        
+        .character-name {
+            font-size: 0.7em;
+            color: #00ff00;
+        }
+        
+        .power-level {
+            font-size: 0.8em;
+            color: #ff0000;
+            font-weight: bold;
+        }
+        
+        /* Panneau droit */
+        .hud-right {
             grid-column: 3;
             grid-row: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         
-        .chart-container {
-            margin-bottom: 20px;
+        /* Carte */
+        .hud-map {
+            height: 200px;
+            background: #0a0a0a;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            position: relative;
         }
         
-        .chart-container h4 {
+        .map-coordinates {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 8px;
+            font-size: 0.7em;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            z-index: 1;
+        }
+        
+        /* Dragon Ball */
+        .hud-dragonball-wrapper {
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .hud-dragonball-wrapper canvas {
+            width: 100%;
+            height: 150px;
+        }
+        
+        /* Logs */
+        .hud-logs {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff00;
+            padding: 8px;
+            font-size: 0.7em;
+            overflow-y: auto;
+        }
+        
+        .log-line {
+            margin: 3px 0;
+            opacity: 0.6;
+        }
+        
+        .log-line.new {
+            opacity: 1;
             color: #ffff00;
-            font-size: 1em;
-            margin-bottom: 8px;
         }
         
-        .chart-container canvas {
-            width: 100% !important;
+        .log-time {
+            color: #6eea8c;
         }
         
-        #zdog-canvas {
-            height: 200px !important;
-        }
-        
-        #power-chart {
-            height: 180px !important;
-        }
-        
-        /* Pied de page - Tableau de puissance */
-        .footer {
+        /* Footer */
+        .hud-footer {
             grid-column: 1 / -1;
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
+        }
+        
+        .power-display {
+            display: flex;
+            gap: 20px;
         }
         
         .power-item {
             text-align: center;
         }
         
-        .power-item h3 {
+        .power-item h4 {
+            font-size: 0.85em;
             color: #ffff00;
-            font-size: 1.1em;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
         
         .power-value {
-            font-size: 2.5em;
+            font-size: 2em;
             color: #ff0000;
             text-shadow: 0 0 15px #ff0000;
             font-weight: bold;
         }
         
         .power-bar {
-            width: 220px;
-            height: 25px;
+            width: 180px;
+            height: 20px;
             background: rgba(0, 255, 0, 0.2);
             border: 2px solid #00ff00;
             border-radius: 10px;
             overflow: hidden;
-            margin: 10px auto;
+            margin: 8px auto;
         }
         
         .power-bar-fill {
@@ -246,42 +445,23 @@
             transition: width 0.5s;
         }
         
-        /* Bouton de verrouillage cible */
+        /* Bouton Lock */
         .lock-button {
-            position: absolute;
-            bottom: 25px;
-            right: 25px;
             background: #ff0000;
             color: #000;
-            border: 2px solid #fff;
-            padding: 12px 25px;
+            border: 3px solid #fff;
+            padding: 12px 30px;
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
-            z-index: 3;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
             font-size: 1.1em;
+            font-family: 'Orbitron', sans-serif;
         }
         
         .lock-button:hover {
             background: #ff3333;
             transform: scale(1.08);
-        }
-        
-        /* Effet de scan */
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 255, 0, 0.6);
-            animation: scan 3s linear infinite;
-            z-index: 10;
-            pointer-events: none;
-        }
-        
-        @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
         }
     </style>
 </head>
@@ -289,243 +469,215 @@
 
     <div class="scan-line"></div>
 
-    <div class="hud-container">
-        
-        <!-- HEADER -->
-        <div class="panel header">
-            <h1>🎯 SCOUTER DBZ</h1>
-            <div class="time" id="current-time">00:00:00</div>
-        </div>
-        
-        <!-- PANNEAU GAUCHE - Informations Textuelles -->
-        <div class="panel left-panel">
-            <div class="info-section">
-                <h3>情報テキスト</h3>
-                <p><span class="info-label">名前:</span> Son Goku</p>
-            </div>
-            
-            <div class="info-section">
-                <h3>ボタン</h3>
-                <button class="btn btn-success btn-sm w-100 mb-2" id="btn-lock">
-                    <i class="bi bi-lock"></i> ターゲットロック
-                </button>
-            </div>
-            
-            <div class="info-section">
-                <h3>カード</h3>
-                <div class="card bg-dark text-success border-success">
-                    <div class="card-body p-2">
-                        <p class="mb-0" style="font-size: 0.85em;">種族: サイヤ人</p>
-                        <p class="mb-0" style="font-size: 0.85em;">状態: 戦闘準備完了</p>
+    <div class="hud-wrapper container-fluid">
+        <main class="hud-grid">
+
+            <!-- HEADER -->
+            <header class="hud-header hud-panel">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="hud-logo">DBZ</div>
+                    <div>
+                        <h1 class="hud-title">SCOUTER INTERFACE</h1>
+                        <p class="hud-small mb-0">SYSTÈME DE DÉTECTION v2.0</p>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- CENTRE - Image du personnage -->
-        <div class="center-panel">
-            <img src="./assets/img/goku.png" alt="Son Goku" id="character-img">
-            <div class="crosshair"></div>
-        </div>
-        
-        <!-- PANNEAU DROIT - Graphiques -->
-        <div class="panel right-panel">
-            <div class="chart-container">
-                <h4>Dragon Ball</h4>
-                <canvas id="zdog-canvas" width="300" height="200"></canvas>
-            </div>
-            
-            <div class="chart-container">
-                <h4>戦闘力グラフ</h4>
-                <canvas id="power-chart"></canvas>
-            </div>
-        </div>
-        
-        <!-- FOOTER - Tableau de puissance -->
-        <div class="panel footer">
-            <div class="power-item">
-                <h3>基本戦闘力</h3>
-                <div class="power-value" id="base-power">9001</div>
-                <div class="power-bar">
-                    <div class="power-bar-fill" style="width: 85%"></div>
+                
+                <div class="text-end">
+                    <p class="hud-small mb-1">
+                        STATUT: <span style="color: #ff0000;">COMBAT ACTIF</span>
+                    </p>
+                    <p class="hud-small mb-0">
+                        HEURE: <span id="hud-clock" class="mono-digits">00:00:00</span>
+                    </p>
+                    <p class="hud-small mb-0">
+                        DATE: <span id="hud-date" class="mono-digits">2025.12.08</span>
+                    </p>
                 </div>
-            </div>
-            
-            <div class="power-item">
-                <h3>現在の戦闘力</h3>
-                <div class="power-value" id="current-power">12000</div>
-                <div class="power-bar">
-                    <div class="power-bar-fill" style="width: 100%"></div>
-                </div>
-            </div>
-            
-            <div class="power-item">
-                <h3>最大戦闘力</h3>
-                <div class="power-value" id="max-power">150000</div>
-                <div class="power-bar">
-                    <div class="power-bar-fill" style="width: 60%"></div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
+            </header>
 
-    <button class="lock-button" id="lock-target">
-        <i class="bi bi-crosshair"></i> LOCK TARGET
-    </button>
+            <!-- PANNEAU GAUCHE -->
+            <aside class="hud-left hud-panel">
+                <h2 class="hud-section-title">
+                    <i class="bi bi-people-fill me-2"></i>GUERRIERS
+                </h2>
+
+                <div class="character-list mb-3">
+                    <button class="character-btn active" data-char="goku">
+                        <span class="status-dot"></span>
+                        <span>Son Goku</span>
+                    </button>
+                    <button class="character-btn" data-char="vegeta">
+                        <span class="status-dot"></span>
+                        <span>Vegeta</span>
+                    </button>
+                    <button class="character-btn" data-char="gohan">
+                        <span class="status-dot"></span>
+                        <span>Gohan</span>
+                    </button>
+                    <button class="character-btn" data-char="piccolo">
+                        <span class="status-dot"></span>
+                        <span>Piccolo</span>
+                    </button>
+                    <button class="character-btn" data-char="frieza">
+                        <span class="status-dot" style="background: #ff0000;"></span>
+                        <span>Frieza</span>
+                    </button>
+                </div>
+
+                <h3 class="hud-section-title">
+                    <i class="bi bi-activity me-2"></i>ACTIVITÉ KI
+                </h3>
+                <div class="hud-chart-wrapper">
+                    <canvas id="activityChart" width="300" height="120"></canvas>
+                </div>
+
+                <h3 class="hud-section-title">
+                    <i class="bi bi-folder-fill me-2"></i>PROFIL
+                </h3>
+                <div class="hud-dossier" id="dossier-text">
+                    名前: Son Goku<br>
+                    種族: サイヤ人<br>
+                    変身: スーパーサイヤ人<br>
+                    惑星: 地球/ナメック星
+                </div>
+
+                <h3 class="hud-section-title">
+                    <i class="bi bi-geo-alt-fill me-2"></i>LOCALISATION
+                </h3>
+                <div class="hud-gps" id="gps-text">
+                    <div class="gps-row">
+                        <span class="gps-label">LAT:</span>
+                        <span class="gps-value" id="gps-lat">23.4162° N</span>
+                    </div>
+                    <div class="gps-row">
+                        <span class="gps-label">LNG:</span>
+                        <span class="gps-value" id="gps-lng">162.9554° E</span>
+                    </div>
+                    <div style="margin-top: 6px; font-size: 0.9em;">
+                        <span style="color: #ffff00;">📍</span> PLANÈTE NAMEK
+                    </div>
+                </div>
+            </aside>
+
+            <!-- PANNEAU CENTRAL -->
+            <section class="hud-center hud-panel">
+                <div class="character-display">
+                    <img src="./assets/img/goku.png" alt="Son Goku" id="character-img">
+                    <div class="crosshair"></div>
+                </div>
+
+                <div class="character-cards">
+                    <div class="character-card active" data-char="goku">
+                        <div style="font-size: 2em;">🥋</div>
+                        <div class="character-name">GOKU</div>
+                        <div class="power-level">9001</div>
+                    </div>
+                    <div class="character-card" data-char="vegeta">
+                        <div style="font-size: 2em;">👊</div>
+                        <div class="character-name">VEGETA</div>
+                        <div class="power-level">8500</div>
+                    </div>
+                    <div class="character-card" data-char="gohan">
+                        <div style="font-size: 2em;">⚡</div>
+                        <div class="character-name">GOHAN</div>
+                        <div class="power-level">7200</div>
+                    </div>
+                    <div class="character-card" data-char="piccolo">
+                        <div style="font-size: 2em;">🟢</div>
+                        <div class="character-name">PICCOLO</div>
+                        <div class="power-level">6500</div>
+                    </div>
+                    <div class="character-card" data-char="frieza">
+                        <div style="font-size: 2em;">👹</div>
+                        <div class="character-name">FRIEZA</div>
+                        <div class="power-level">120000</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANNEAU DROIT -->
+            <aside class="hud-right hud-panel">
+                <h2 class="hud-section-title">
+                    <i class="bi bi-globe me-2"></i>CARTE TACTIQUE
+                </h2>
+                <div id="map" class="hud-map">
+                    <div class="map-coordinates" id="map-coords">
+                        23.4162° N, 162.9554° E
+                    </div>
+                </div>
+
+                <h3 class="hud-section-title">
+                    <i class="bi bi-stars me-2"></i>Dragon Ball
+                </h3>
+                <div class="hud-dragonball-wrapper">
+                    <canvas id="zdog-canvas" width="180" height="150"></canvas>
+                    <p style="font-size: 0.8em; color: #ffff00; margin-top: 5px;">⭐ 4 ÉTOILES</p>
+                </div>
+
+                <h3 class="hud-section-title">
+                    <i class="bi bi-file-earmark-code me-2"></i>DONNÉES SCOUTER
+                </h3>
+                <div class="hud-logs" id="logs">
+                    <div class="log-line"><span class="log-time">21:45:01</span> SCAN: NIVEAU_KI_DÉTECTÉ</div>
+                    <div class="log-line"><span class="log-time">21:45:12</span> ALERTE: TRANSFORMATION</div>
+                    <div class="log-line"><span class="log-time">21:45:28</span> DONNÉES: CRYPTAGE_OK</div>
+                    <div class="log-line new"><span class="log-time">21:45:44</span> STATUT: COMBAT_ACTIF</div>
+                </div>
+            </aside>
+
+            <!-- FOOTER -->
+            <footer class="hud-footer hud-panel">
+                <div class="power-display">
+                    <div class="power-item">
+                        <h4>基本戦闘力</h4>
+                        <div class="power-value" id="base-power">9001</div>
+                        <div class="power-bar">
+                            <div class="power-bar-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="power-item">
+                        <h4>現在の戦闘力</h4>
+                        <div class="power-value" id="current-power">12000</div>
+                        <div class="power-bar">
+                            <div class="power-bar-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="power-item">
+                        <h4>最大戦闘力</h4>
+                        <div class="power-value" id="max-power">150000</div>
+                        <div class="power-bar">
+                            <div class="power-bar-fill" style="width: 60%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="lock-button" id="lock-target">
+                    <i class="bi bi-crosshair"></i> LOCK TARGET
+                </button>
+            </footer>
+
+        </main>
+    </div>
 
     <!-- AUDIO -->
     <audio id="lock-sound" src="./assets/audio/sound.mp3" preload="auto"></audio>
 
-    <!-- IMPORTMAP -->
-    <script type="importmap">
-    {
-        "imports": {
-            "animejs": "https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.es.js",
-            "chart.js": "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/+esm",
-            "tone": "https://cdn.jsdelivr.net/npm/tone@14.7.77/+esm",
-            "zdog": "https://cdn.jsdelivr.net/npm/zdog@1.1.3/+esm"
-        }
-    }
-    </script>
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.min.js"></script>
 
-    <script type="module">
-        // Horloge en temps réel
-        function updateTime() {
-            const now = new Date();
-            const time = now.toLocaleTimeString('fr-FR');
-            document.getElementById('current-time').textContent = time;
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // ZDOG - DRAGON BALL (Boule orange avec étoile)
-        import Zdog from 'zdog';
-        
-        const illo = new Zdog.Illustration({
-            element: '#zdog-canvas',
-            dragRotate: true,
-            zoom: 5,
-            rotate: { x: -0.3, y: 0.5 }
-        });
-
-        // Sphère orange (Dragon Ball)
-        new Zdog.Ellipse({
-            addTo: illo,
-            diameter: 40,
-            stroke: 20,
-            color: '#ff8800',
-        });
-
-        // Étoile au centre
-        const star = new Zdog.Shape({
-            addTo: illo,
-            path: [
-                { x: 0, y: -8 },
-                { x: 2, y: -3 },
-                { x: 8, y: -3 },
-                { x: 3, y: 1 },
-                { x: 5, y: 8 },
-                { x: 0, y: 4 },
-                { x: -5, y: 8 },
-                { x: -3, y: 1 },
-                { x: -8, y: -3 },
-                { x: -2, y: -3 }
-            ],
-            closed: true,
-            stroke: 0,
-            color: '#ff0000',
-            fill: true
-        });
-
-        function animateZdog() {
-            illo.rotate.y += 0.02;
-            illo.updateRenderGraph();
-            requestAnimationFrame(animateZdog);
-        }
-        animateZdog();
-
-        // CHART.JS
-        import { Chart, registerables } from 'chart.js';
-        Chart.register(...registerables);
-
-        const ctx = document.getElementById('power-chart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['0s', '2s', '4s', '6s', '8s', '10s'],
-                datasets: [{
-                    label: '戦闘力',
-                    data: [9000, 12000, 15000, 18000, 22000, 25000],
-                    borderColor: '#00ff00',
-                    backgroundColor: 'rgba(0, 255, 0, 0.3)',
-                    tension: 0.4,
-                    fill: true,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: { 
-                        ticks: { color: '#00ff00', font: { size: 10 } },
-                        grid: { color: 'rgba(0, 255, 0, 0.2)' }
-                    },
-                    y: { 
-                        ticks: { color: '#00ff00', font: { size: 10 } },
-                        grid: { color: 'rgba(0, 255, 0, 0.2)' }
-                    }
-                }
-            }
-        });
-
-        // ANIME.JS - Animation du bouton lock
-        import anime from 'animejs';
-        
-        const lockSound = document.getElementById('lock-sound');
-        
-        document.getElementById('lock-target').addEventListener('click', function() {
-            // JOUER LE SON
-            lockSound.currentTime = 0;
-            lockSound.play();
-            
-            anime({
-                targets: '.crosshair',
-                scale: [1, 1.5, 1],
-                rotate: '1turn',
-                duration: 500,
-                easing: 'easeInOutQuad'
-            });
-            
-            anime({
-                targets: '#character-img',
-                scale: [1, 1.1, 1],
-                duration: 300
-            });
-        });
-
-       // TONE.JS - Son au lock du bouton japonais
-        import * as Tone from 'tone';
-        
-        document.getElementById('btn-lock').addEventListener('click', async function() {
-            await Tone.start();
-            const synth = new Tone.Synth().toDestination();
-            synth.triggerAttackRelease("C5", "8n");
-            
-            anime({
-                targets: '.center-panel',
-                borderColor: ['#00ff00', '#ff0000', '#00ff00'],
-                duration: 500
-            });
-        });
-
-    </script>
+    <script src="src/js/vfx.js"></script>
+    <script src="src/js/animejs.js"></script>
+    <script src="src/js/chartjs.js"></script>
+    <script src="src/js/maplibre.js"></script>
+    <script src="src/js/zdog.js"></script>
+    <script src="src/js/tonejs.js"></script>
 
 </body>
 </html>
