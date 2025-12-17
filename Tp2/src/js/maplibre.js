@@ -17,6 +17,21 @@ document.addEventListener("DOMContentLoaded", () => {
     "frieza": { lng: -46.6333, lat: -23.5505 }
   };
 
+    // CREATION MARQUEUR POUR PERSONNAGES
+  map.on("load", () => {
+    Object.entries(locations).forEach(([id, loc]) => {
+      const el = document.createElement("div");
+      el.className = id === "goku" ? "map-marker active" : "map-marker";
+      el.innerHTML = '<div class="marker-dot"></div>';
+      
+      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
+        .setLngLat([loc.lng, loc.lat])
+        .addTo(map);
+      
+      markers[id] = { marker, element: el };
+    });
+  });
+
   const style = document.createElement("style");
   style.textContent = `
     .map-marker { width: 20px; height: 20px; position: relative; }
@@ -36,42 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.head.appendChild(style);
 
-  const markers = {};
+  
 
-  // CREATION MARQUEUR POUR PERSONNAGES
-  map.on("load", () => {
-    Object.entries(locations).forEach(([id, loc]) => {
-      const el = document.createElement("div");
-      el.className = id === "goku" ? "map-marker active" : "map-marker";
-      el.innerHTML = '<div class="marker-dot"></div>';
-      
-      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
-        .setLngLat([loc.lng, loc.lat])
-        .addTo(map);
-      
-      markers[id] = { marker, element: el };
-    });
-  });
 
-  function updateCoords(lng, lat) {
-    const el = document.getElementById("map-coords");
-    if (el) {
-      const latDir = lat >= 0 ? "N" : "S";
-      const lngDir = lng >= 0 ? "E" : "W";
-      el.textContent = `${Math.abs(lat).toFixed(4)}° ${latDir}, ${Math.abs(lng).toFixed(4)}° ${lngDir}`;
-    }
-  }
-
-  function setActive(charId) {
-    Object.entries(markers).forEach(([id, { element }]) => {
-      element.classList.toggle("active", id === charId);
-    });
-  }
-
-  window.hudMap = map;
-  window.hudCharLocations = locations;
-  window.setActiveMarker = setActive;
-  window.updateMapCoordinates = updateCoords;
-
-  updateCoords(162.9554, 23.4162);
+ 
 });
