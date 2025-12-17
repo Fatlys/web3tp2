@@ -18,12 +18,12 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedImg.classList.add("active");
     }
 
-    
+    // MISE A JOUR VALEUR PUISANCE
     document.getElementById("base-power").textContent = data.powers.base;
     document.getElementById("current-power").textContent = data.powers.current;
     document.getElementById("max-power").textContent = data.powers.max;
 
-    
+    // ANIMATION BARRE PUISSANCE
     const bars = document.querySelectorAll(".power-bar-fill");
     bars.forEach(bar => bar.style.width = "0%");
     setTimeout(() => {
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.classList.toggle("active", btn.dataset.char === charId);
     });
 
-    
+    // MISE A JOUR CARTE
     if (window.hudMap && window.hudCharLocations) {
       const loc = window.hudCharLocations[charId];
       if (loc) {
@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  
   document.querySelectorAll(".character-btn").forEach(btn => {
     btn.addEventListener("click", () => switchCharacter(btn.dataset.char));
   });

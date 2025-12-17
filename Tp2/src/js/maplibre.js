@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const markers = {};
 
+  // CREATION MARQUEUR POUR PERSONNAGES
   map.on("load", () => {
     Object.entries(locations).forEach(([id, loc]) => {
       const el = document.createElement("div");
